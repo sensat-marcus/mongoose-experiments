@@ -1,7 +1,7 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Hobby, HobbyModel } from "./models/hobby";
 import { Person, PersonModel } from "./models/person";
-import { Cat, CatData, CatMethods, CatModel } from "./models/pet";
+import { Cat, CatModel } from "./models/pet";
 
 const clearAll = async (): Promise<void> => {
   await PersonModel.deleteMany({});
