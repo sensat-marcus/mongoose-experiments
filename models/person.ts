@@ -18,6 +18,7 @@ export interface Person {
   tags: mongoose.Types.Array<string>;
   hobbies: mongoose.Types.Array<mongoose.Types.ObjectId>;
   address: Address;
+  cats: mongoose.Types.Array<mongoose.Types.ObjectId>;
 }
 
 const personSchema = new mongoose.Schema<Person>({
@@ -30,6 +31,7 @@ const personSchema = new mongoose.Schema<Person>({
     ref: "Hobby",
   },
   address: { type: addressSchema },
+  cats: { type: [mongoose.Schema.Types.ObjectId], default: [], ref: "Cat" },
 });
 
 export const PersonModel = mongoose.model<Person>("Person", personSchema);
