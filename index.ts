@@ -8,14 +8,14 @@ interface Address {
 interface Person {
   name: String;
   nickname?: String;
-  friends: String[];
+  tags: mongoose.Types.Array<String>;
   address: Address;
 }
 
 const personSchema = new mongoose.Schema<Person>({
   name: {type: String, required: true},
   nickname: {type: String, default: 'sonny'},
-  friends: {type: [String]},
+  tags: {type: [String]},
 });
 
 const PersonModel = mongoose.model<Person>('Person', personSchema);
@@ -25,12 +25,12 @@ const clearMe  = async () => {
 };
 
 const createMe = async (): Promise<HydratedDocument<Person>> => {
-  return await new PersonModel({name: 'Marcus', friends: ['Aviva']})
+  return new PersonModel({name: 'Marcus', friends: ["Aviva's husband"]});
 };
 
 const saveMe = async (me: HydratedDocument<Person>) => {
   await me.save();
-  console.log('Saved', me._id);
+  console.log(me._id + ' has been saved');
 };
 
 const findMe = async (): Promise<HydratedDocument<Person>> => {
@@ -42,7 +42,8 @@ const findMe = async (): Promise<HydratedDocument<Person>> => {
 };
 
 const showMe = (me: Person) => {
-  console.log('Me', me);
+  console.log('Me:', me.name);
+  console.log('Notes:', me.tags);
 };
 
 const main = async () => {
