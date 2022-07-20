@@ -1,23 +1,33 @@
-import mongoose from 'mongoose';
+import mongoose, {HydratedDocument} from 'mongoose';
 
-const personSchema = new mongoose.Schema({
+interface Person {
+  name: String;
+  nickname?: String;
+  friends: String[];
+}
+
+const personSchema = new mongoose.Schema<Person>({
   name: {type: String, required: true},
-  nickname: {type: String, default: ''},
+  nickname: {type: String, default: 'sonny'},
   friends: {type: [String]},
 });
 
-const Person = mongoose.model('Person', personSchema);
+const PersonModel = mongoose.model<Person>('Person', personSchema);
 
 const clearMe  = async () => {
-  await Person.deleteMany({});
+  await PersonModel.deleteMany({});
 };
 
 const createMe = async () => {
-  await new Person({name: 'Marcus', friends: ['Aviva']}).save()
+  await new PersonModel({name: 'Marcus', friends: ['Aviva']}).save()
 };
 
-const findMe = async () => {
-  return await Person.find({name: 'Marcus'});
+const findMe = async (): Promise<HydratedDocument<Person>> => {
+  const person = await PersonModel.findOne({name: 'Marcus'});
+  if (! person) {
+    throw new Error('No Person');
+  }
+  return person;
 };
 
 const main = async () => {
