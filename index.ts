@@ -48,6 +48,7 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
   } else {
     console.error('No hobby');
   }
+  person.hobbies.push(hobby);
   return person;
 };
 
