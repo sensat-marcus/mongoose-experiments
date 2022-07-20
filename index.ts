@@ -1,5 +1,7 @@
 import mongoose, {HydratedDocument} from 'mongoose';
 
+// Data model
+
 interface Hobby {
   name: String;
 }
@@ -10,8 +12,13 @@ const HobbyModel = mongoose.model<Hobby>('Hobby', hobbySchema);
 
 interface Address {
   street: String;
-  city: String;
+  city?: String;
 }
+
+const addressSchema = new mongoose.Schema<Address>({
+  street: {type: String, required: true},
+  city: {type: String, required: false},
+});
 
 interface Person {
   name: String;
@@ -26,9 +33,12 @@ const personSchema = new mongoose.Schema<Person>({
   nickname: {type: String, default: 'sonny'},
   tags: {type: [String], default: []},
   hobbies: {type: [mongoose.Schema.Types.ObjectId], default: [], ref: 'Hobby'},
+  address: {type: addressSchema},
 });
 
 const PersonModel = mongoose.model<Person>('Person', personSchema);
+
+// End data model
 
 const clearAll  = async () => {
   await PersonModel.deleteMany({});
@@ -41,14 +51,15 @@ const createHobby = async () => {
 };
 
 const newMe = async (): Promise<HydratedDocument<Person>> => {
-  const person = new PersonModel({name: 'Marcus', tags: ["Aviva's husband"]});
   const hobby = await HobbyModel.findOne({name: 'Starcraft'});
+  const person = new PersonModel({
+    name: 'Marcus',
+    tags: ["Aviva's husband"],
+    address: {street: 'Oxford st'}
+  });
   if (hobby) {
-    await person.hobbies.push();
-  } else {
-    console.error('No hobby');
+    person.hobbies.push(hobby);
   }
-  person.hobbies.push(hobby);
   return person;
 };
 
@@ -66,9 +77,7 @@ const findMe = async (): Promise<HydratedDocument<Person>> => {
 };
 
 const showMe = (me: Person) => {
-  console.log('Me:', me.name);
-  console.log('Notes:', me.tags);
-  console.log('Hobbies:', me.hobbies);
+  console.log('Me:', me);
 };
 
 const main = async () => {
