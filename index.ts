@@ -1,9 +1,15 @@
 import mongoose, {HydratedDocument} from 'mongoose';
 
+interface Address {
+  street: String;
+  city: String;
+}
+
 interface Person {
   name: String;
   nickname?: String;
   friends: String[];
+  address: Address;
 }
 
 const personSchema = new mongoose.Schema<Person>({
@@ -18,8 +24,13 @@ const clearMe  = async () => {
   await PersonModel.deleteMany({});
 };
 
-const createMe = async () => {
-  await new PersonModel({name: 'Marcus', friends: ['Aviva']}).save()
+const createMe = async (): Promise<HydratedDocument<Person>> => {
+  return await new PersonModel({name: 'Marcus', friends: ['Aviva']})
+};
+
+const saveMe = async (me: HydratedDocument<Person>) => {
+  await me.save();
+  console.log('Saved', me._id);
 };
 
 const findMe = async (): Promise<HydratedDocument<Person>> => {
@@ -30,15 +41,24 @@ const findMe = async (): Promise<HydratedDocument<Person>> => {
   return person;
 };
 
+const showMe = (me: Person) => {
+  console.log('Me', me);
+};
+
 const main = async () => {
   await mongoose.connect('mongodb://localhost:27017/playpen');
   console.log('Connected');
   await clearMe();
-  await createMe();
+  await saveMe(await createMe());
   const person = await findMe();
   await mongoose.disconnect();
-  console.log('Done');
-  return person;
+  showMe(person);
+  return 0;
 }
 
-main().then(console.log).catch(console.error);
+main().then(console.log).catch(err => {
+  console.error(err);
+  mongoose.disconnect().then(result => {
+    console.log('disconnected:', result);
+  });
+});
