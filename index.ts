@@ -13,11 +13,13 @@ const HobbyModel = mongoose.model<Hobby>('Hobby', hobbySchema);
 interface Address {
   street: String;
   city?: String;
+  country: String;
 }
 
 const addressSchema = new mongoose.Schema<Address>({
   street: {type: String, required: true},
   city: {type: String, required: false},
+  country: {type: String, default: 'UK'},
 });
 
 interface Person {
