@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { PopulatedDoc } from "mongoose";
+import { Cat } from "./pet";
+import { Hobby } from "./hobby";
 
 interface Address {
   street: string;
@@ -16,9 +18,14 @@ export interface Person {
   name: string;
   nickname?: string;
   tags: mongoose.Types.Array<string>;
-  hobbies: mongoose.Types.Array<mongoose.Types.ObjectId>;
+  hobbies: mongoose.Types.Array<PopulatedDoc<Hobby>>;
   address: Address;
-  cats: mongoose.Types.Array<mongoose.Types.ObjectId>;
+  cats: mongoose.Types.Array<PopulatedDoc<Cat>>;
+}
+
+export interface PopulatedPerson extends Omit<Omit<Person, "hobbies">, "cats"> {
+  hobbies: Hobby[];
+  cats: Cat[];
 }
 
 const personSchema = new mongoose.Schema<Person>({

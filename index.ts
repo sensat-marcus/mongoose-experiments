@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Hobby, HobbyModel } from "./models/hobby";
-import { Person, PersonModel } from "./models/person";
+import { Person, PersonModel, PopulatedPerson } from "./models/person";
 import { Cat, CatModel } from "./models/pet";
 
 const clearAll = async (): Promise<void> => {
@@ -42,19 +42,21 @@ const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
   console.log("Person " + me._id.toString() + " has been saved");
 };
 
-const findMe = async (): Promise<HydratedDocument<Person>> => {
-  const person = await PersonModel.findOne({ name: "Marcus" });
-  if (!person) {
-    throw new Error("No Person");
-  }
-  await person.populate<{ hobbies: Hobby[] }>("hobbies");
-  await person.populate<{ cats: Cat[] }>("cats");
-  return person;
+const findMe = async () => {
+  return PersonModel.findOne({ name: "Marcus" })
+    .populate<{
+      hobbies: Hobby[];
+    }>("hobbies")
+    .populate<{ cats: Cat[] }>("cats");
 };
 
-const showMe = (me: Person): void => {
+const showMe = (me: PopulatedPerson): void => {
   console.log("Me:", me);
-  console.log("Cat says", (me.cats[0] as mongoose.Types.ObjectId & Cat).meow());
+  if (me.cats[0] && (me.cats[0] as Cat).meow) {
+    console.log("Function Cat says", (me.cats[0] as Cat).meow());
+  } else {
+    console.log("Function Cat says nothing", me.cats[0]);
+  }
 };
 
 const main = async (): Promise<number> => {
@@ -66,7 +68,12 @@ const main = async (): Promise<number> => {
   await saveMe(await newMe());
   const person = await findMe();
   await mongoose.disconnect();
-  showMe(person);
+  if (person?.cats[0]) {
+    console.log("Directly cat says", person.cats[0].meow());
+  }
+  if (person) {
+    showMe(person);
+  }
   return 0;
 };
 
