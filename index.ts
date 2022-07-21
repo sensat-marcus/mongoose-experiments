@@ -27,6 +27,7 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
     name: "Marcus",
     tags: ["Aviva's husband"],
     address: { street: "Oxford st" },
+    nickname: undefined,
   });
   if (hobby) {
     person.hobbies.push(hobby);
