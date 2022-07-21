@@ -59,8 +59,8 @@ const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
 
 const showMe = (me: HydratedDocument<PopulatedPerson>): void => {
   console.log("Me:", me._id, me);
-  if (me.cats[0] && (me.cats[0] as Cat).meow) {
-    console.log("Function Cat says", (me.cats[0] as Cat).meow());
+  if (me.populated("cats") && me.cats[0]) {
+    console.log("Function Cat says", me.cats[0].meow());
   } else {
     console.log("Function Cat says nothing", me.cats[0]);
   }
