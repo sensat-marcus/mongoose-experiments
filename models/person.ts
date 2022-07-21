@@ -41,4 +41,7 @@ const personSchema = new mongoose.Schema<Person>({
   cats: { type: [mongoose.Schema.Types.ObjectId], default: [], ref: "Cat" },
 });
 
-export const PersonModel = mongoose.model<Person>("Person", personSchema);
+const _Model = mongoose.model<Person>("Person", personSchema);
+export const PersonModel = class PersonModel extends _Model {
+  static personCount = 0;
+} as typeof _Model & { personCount: number };

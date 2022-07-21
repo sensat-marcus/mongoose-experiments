@@ -39,10 +39,17 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
 
 const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
   await me.save();
-  console.log("Person " + me._id.toString() + " has been saved");
+  PersonModel.personCount++;
+  console.log(
+    "Person " +
+      PersonModel.personCount.toString() +
+      " " +
+      me._id.toString() +
+      " has been saved"
+  );
 };
 
-const findMe = async () => {
+const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
   return PersonModel.findOne({ name: "Marcus" })
     .populate<{
       hobbies: Hobby[];
@@ -50,8 +57,8 @@ const findMe = async () => {
     .populate<{ cats: Cat[] }>("cats");
 };
 
-const showMe = (me: PopulatedPerson): void => {
-  console.log("Me:", me);
+const showMe = (me: HydratedDocument<PopulatedPerson>): void => {
+  console.log("Me:", me._id, me);
   if (me.cats[0] && (me.cats[0] as Cat).meow) {
     console.log("Function Cat says", (me.cats[0] as Cat).meow());
   } else {
