@@ -1,17 +1,17 @@
 import mongoose, { HydratedDocument } from "mongoose";
-import { Hobby, HobbyModel } from "./models/hobby";
+import { Pasttime, PasttimeModel } from "./models/pasttime";
 import { Person, PersonModel, PopulatedPerson } from "./models/person";
 import { Cat, CatModel } from "./models/pet";
 
 const clearAll = async (): Promise<void> => {
   await PersonModel.deleteMany({});
-  await HobbyModel.deleteMany({});
+  await PasttimeModel.deleteMany({});
   await CatModel.deleteMany({});
 };
 
-const createHobby = async (): Promise<void> => {
-  const hobby = await new HobbyModel({ name: "Starcraft" }).save();
-  console.log("Hobby " + hobby._id.toString() + " has been saved");
+const createPasttime = async (): Promise<void> => {
+  const pasttime = await new PasttimeModel({ name: "Starcraft" }).save();
+  console.log("Pasttime " + pasttime._id.toString() + " has been saved");
 };
 
 const createCat = async (): Promise<void> => {
@@ -21,7 +21,7 @@ const createCat = async (): Promise<void> => {
 };
 
 const newMe = async (): Promise<HydratedDocument<Person>> => {
-  const hobby = await HobbyModel.findOne({ name: "Starcraft" });
+  const pasttime = await PasttimeModel.findOne({ name: "Starcraft" });
   const cat = await CatModel.findOne({ name: "Biscuit" });
   const person = new PersonModel({
     name: "Marcus",
@@ -29,8 +29,8 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
     address: { street: "Oxford st" },
     nickname: undefined,
   });
-  if (hobby) {
-    person.hobbies.push(hobby);
+  if (pasttime) {
+    person.pasttimes.push(pasttime);
   }
   if (cat) {
     person.cats.push(cat);
@@ -53,8 +53,8 @@ const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
 const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
   return PersonModel.findOne({ name: "Marcus" })
     .populate<{
-      hobbies: Hobby[];
-    }>("hobbies")
+      pasttimes: Pasttime[];
+    }>("pasttimes")
     .populate<{ cats: Cat[] }>("cats");
 };
 
@@ -71,7 +71,7 @@ const main = async (): Promise<number> => {
   await mongoose.connect("mongodb://localhost:27017/playpen");
   console.log("Connected");
   await clearAll();
-  await createHobby();
+  await createPasttime();
   await createCat();
   await saveMe(await newMe());
   const person = await findMe();
