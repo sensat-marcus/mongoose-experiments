@@ -1,6 +1,6 @@
 import mongoose, { PopulatedDoc } from "mongoose";
 import { Cat } from "./pet";
-import { Pasttime } from "./pasttime";
+import { Hobby, Pasttime } from "./pasttime";
 
 interface Address {
   street: string;
@@ -25,7 +25,7 @@ export interface Person {
 
 export interface PopulatedPerson
   extends Omit<Omit<Person, "pasttimes">, "cats"> {
-  pasttimes: Pasttime[];
+  pasttimes: Hobby[];
   cats: Cat[];
 }
 
