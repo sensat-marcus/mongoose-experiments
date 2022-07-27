@@ -1,4 +1,4 @@
-import mongoose, { PopulatedDoc } from "mongoose";
+import mongoose, { HydratedDocument, PopulatedDoc } from "mongoose";
 import { Cat } from "./pet";
 import { Hobby, Pasttime } from "./pasttime";
 
@@ -25,8 +25,8 @@ export interface Person {
 
 export interface PopulatedPerson
   extends Omit<Omit<Person, "pasttimes">, "cats"> {
-  pasttimes: Hobby[];
-  cats: Cat[];
+  pasttimes: HydratedDocument<Hobby>[];
+  cats: HydratedDocument<Cat>[];
 }
 
 const personSchema = new mongoose.Schema<Person>({

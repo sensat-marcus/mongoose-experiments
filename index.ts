@@ -1,5 +1,5 @@
 import mongoose, { HydratedDocument } from "mongoose";
-import { Pasttime, PasttimeModel, ESportModel, Hobby } from "./models/pasttime";
+import { PasttimeModel, ESportModel, Hobby } from "./models/pasttime";
 import { Person, PersonModel, PopulatedPerson } from "./models/person";
 import { Cat, CatModel } from "./models/pet";
 
@@ -54,22 +54,32 @@ const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
 };
 
 const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
-  return PersonModel.findOne({ name: "Marcus" })
+  return PersonModel.findOne({
+    name: "Marcus",
+    "address.street": /Oxford/,
+  })
     .populate<{
-      pasttimes: Hobby[];
+      pasttimes: HydratedDocument<Hobby>[];
     }>("pasttimes")
-    .populate<{ cats: Cat[] }>("cats");
+    .populate<{ cats: HydratedDocument<Cat>[] }>("cats");
 };
 
 const showMe = (me: HydratedDocument<PopulatedPerson>): void => {
+  console.log("Person is type:", me.toString());
   console.log("Me:", me._id, me);
   if (me.populated("cats") && me.cats[0]) {
     console.log("Function Cat says", me.cats[0].meow());
+    console.log("Cat is type:", me.cats[0].constructor.name);
   } else {
     console.log("Function Cat says nothing", me.cats[0]);
   }
-  if (me.pasttimes[0] && "league" in me.pasttimes[0]) {
+  if (
+    me.populated("pasttimes") &&
+    me.pasttimes[0] &&
+    "league" in me.pasttimes[0]
+  ) {
     console.log("League:", me.pasttimes[0].league);
+    console.log("Hobby is type:", me.pasttimes[0].constructor.name);
   }
 };
 
