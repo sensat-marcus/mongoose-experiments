@@ -15,6 +15,7 @@ type CatType = mongoose.Model<CatData, {}, CatMethods>;
 const catSchema = new mongoose.Schema<CatData, CatType, CatMethods>({
   name: { type: String },
 });
-catSchema.method("meow", () => "meow!");
+// Use methods...
+catSchema.method({ meow: () => "meow!" });
 
 export const CatModel = mongoose.model<CatData, CatType>("Cat", catSchema);

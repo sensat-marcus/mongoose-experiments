@@ -28,9 +28,11 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
   const cat = await CatModel.findOne({ name: "Biscuit" });
   const person = new PersonModel({
     name: "Marcus",
-    tags: ["Aviva's husband"],
+    tags: new mongoose.Types.Array("aviva", "husband"),
     address: { street: "Oxford st" },
     nickname: undefined,
+    pasttimes: new mongoose.Types.Array(),
+    cats: new mongoose.Types.Array(),
   });
   if (pasttime) {
     person.pasttimes.push(pasttime);
@@ -57,6 +59,7 @@ const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
   return PersonModel.findOne({
     name: "Marcus",
     "address.street": /Oxford/,
+    tags: { $in: "husband" },
   })
     .populate<{
       pasttimes: HydratedDocument<Hobby>[];
@@ -65,8 +68,10 @@ const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
 };
 
 const showMe = (me: HydratedDocument<PopulatedPerson>): void => {
-  console.log("Person is type:", me.toString());
-  console.log("Me:", me._id, me);
+  console.log("Person is type:", me.constructor.name);
+  console.log("Person is a model:", me instanceof PersonModel);
+  console.log("Me:", me);
+  console.log("Me object:", me.toObject());
   if (me.populated("cats") && me.cats[0]) {
     console.log("Function Cat says", me.cats[0].meow());
     console.log("Cat is type:", me.cats[0].constructor.name);
@@ -83,6 +88,12 @@ const showMe = (me: HydratedDocument<PopulatedPerson>): void => {
   }
 };
 
+const findMeAgain = async (query: {
+  _id: string;
+}): Promise<HydratedDocument<Person> | null> => {
+  return PersonModel.findOne(query);
+};
+
 const main = async (): Promise<number> => {
   await mongoose.connect("mongodb://localhost:27017/playpen");
   console.log("Connected");
@@ -91,7 +102,6 @@ const main = async (): Promise<number> => {
   await createCat();
   await saveMe(await newMe());
   const person = await findMe();
-  await mongoose.disconnect();
   if (person?.cats[0]) {
     console.log("Directly cat says", person.cats[0].meow());
   }
@@ -100,7 +110,10 @@ const main = async (): Promise<number> => {
   }
   if (person) {
     showMe(person);
+    const samePerson = await findMeAgain({ _id: person._id.toString() });
+    console.log("Back again:", samePerson);
   }
+  await mongoose.disconnect();
   return 0;
 };
 

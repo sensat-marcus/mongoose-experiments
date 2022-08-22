@@ -1,11 +1,11 @@
-import mongoose, { HydratedDocument, PopulatedDoc } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { Cat } from "./pet";
-import { Hobby, Pasttime } from "./pasttime";
+import { Hobby } from "./pasttime";
 
 interface Address {
   street: string;
   city?: string;
-  country: string;
+  country?: string;
 }
 
 const addressSchema = new mongoose.Schema<Address>({
@@ -18,9 +18,9 @@ export interface Person {
   name: string;
   nickname?: string;
   tags: mongoose.Types.Array<string>;
-  pasttimes: mongoose.Types.Array<PopulatedDoc<Pasttime>>;
+  pasttimes: mongoose.Types.Array<mongoose.Types.ObjectId>;
   address: Address;
-  cats: mongoose.Types.Array<PopulatedDoc<Cat>>;
+  cats: mongoose.Types.Array<mongoose.Types.ObjectId>;
 }
 
 export interface PopulatedPerson
@@ -42,7 +42,9 @@ const personSchema = new mongoose.Schema<Person>({
   cats: { type: [mongoose.Schema.Types.ObjectId], default: [], ref: "Cat" },
 });
 
-const _Model = mongoose.model<Person>("Person", personSchema);
-export const PersonModel = class PersonModel extends _Model {
+export const PersonModel = class PersonModel extends mongoose.model<Person>(
+  "Person",
+  personSchema
+) {
   static personCount = 0;
-} as typeof _Model & { personCount: number };
+};
