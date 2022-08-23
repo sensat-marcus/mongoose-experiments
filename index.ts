@@ -28,17 +28,16 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
   const cat = await CatModel.findOne({ name: "Biscuit" });
   const person = new PersonModel({
     name: "Marcus",
-    tags: new mongoose.Types.Array("aviva", "husband"),
+    tags: ["aviva", "husband"],
     address: { street: "Oxford st" },
-    nickname: undefined,
-    pasttimes: new mongoose.Types.Array(),
-    cats: new mongoose.Types.Array(),
+    pasttimes: [],
+    cats: [],
   });
   if (pasttime) {
-    person.pasttimes.push(pasttime);
+    person.pasttimes.push(pasttime._id);
   }
   if (cat) {
-    person.cats.push(cat);
+    person.cats.push(cat._id);
   }
   return person;
 };
@@ -56,7 +55,7 @@ const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
 };
 
 const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
-  return PersonModel.findOne({
+  const me = PersonModel.findOne({
     name: "Marcus",
     "address.street": /Oxford/,
     tags: { $in: "husband" },
@@ -65,6 +64,7 @@ const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
       pasttimes: HydratedDocument<Hobby>[];
     }>("pasttimes")
     .populate<{ cats: HydratedDocument<Cat>[] }>("cats");
+  return me;
 };
 
 const showMe = (me: HydratedDocument<PopulatedPerson>): void => {

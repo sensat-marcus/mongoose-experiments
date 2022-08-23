@@ -1,4 +1,4 @@
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose from "mongoose";
 import { Cat } from "./pet";
 import { Hobby } from "./pasttime";
 
@@ -17,16 +17,16 @@ const addressSchema = new mongoose.Schema<Address>({
 export interface Person {
   name: string;
   nickname?: string;
-  tags: mongoose.Types.Array<string>;
-  pasttimes: mongoose.Types.Array<mongoose.Types.ObjectId>;
+  tags: Array<string>;
+  pasttimes: Array<mongoose.Types.ObjectId>;
   address: Address;
-  cats: mongoose.Types.Array<mongoose.Types.ObjectId>;
+  cats: Array<mongoose.Types.ObjectId>;
 }
 
 export interface PopulatedPerson
   extends Omit<Omit<Person, "pasttimes">, "cats"> {
-  pasttimes: HydratedDocument<Hobby>[];
-  cats: HydratedDocument<Cat>[];
+  pasttimes: Array<Hobby>;
+  cats: Array<Cat>;
 }
 
 const personSchema = new mongoose.Schema<Person>({
