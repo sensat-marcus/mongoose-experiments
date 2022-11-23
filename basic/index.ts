@@ -42,6 +42,12 @@ const main = async (): Promise<number> => {
   await employer.save();
   console.log("Employer saved", employer);
 
+  const foundEmployer = await EmployerModel.findOne({ name: "Acme inc" });
+  console.log("Employer found", foundEmployer);
+  if (foundEmployer) {
+    console.log("Employer found", await foundEmployer.populate("people"));
+  }
+
   await mongoose.disconnect();
   return 0;
 };
