@@ -38,7 +38,7 @@ const main = async (): Promise<number> => {
   const foundPerson = await findPerson("Marcus");
   console.log("Person found", foundPerson);
 
-  const employer = new EmployerModel({ name: "Acme inc" });
+  const employer = new EmployerModel({ name: "Acme inc", people: [person] });
   await employer.save();
   console.log("Employer saved", employer);
 
