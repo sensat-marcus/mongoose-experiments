@@ -1,5 +1,5 @@
 import mongoose, { HydratedDocument } from "mongoose";
-import { PasttimeModel, ESportModel, Hobby } from "./models/pasttime";
+import { ESportModel, Hobby, PasttimeModel } from "./models/pasttime";
 import { Person, PersonModel, PopulatedPerson } from "./models/person";
 import { Cat, CatModel } from "./models/pet";
 
@@ -55,16 +55,18 @@ const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
 };
 
 const findMe = async (): Promise<HydratedDocument<PopulatedPerson> | null> => {
-  const me = PersonModel.findOne({
+  return PersonModel.findOne({
     name: "Marcus",
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     "address.street": /Oxford/,
     tags: { $in: "husband" },
   })
     .populate<{
-      pasttimes: HydratedDocument<Hobby>[];
+      pasttimes: Array<HydratedDocument<Hobby>>;
     }>("pasttimes")
-    .populate<{ cats: HydratedDocument<Cat>[] }>("cats");
-  return me;
+    .populate<{ cats: HydratedDocument<Cat>[] }>(
+      "cats"
+    ) as unknown as HydratedDocument<PopulatedPerson>;
 };
 
 const showMe = (me: HydratedDocument<PopulatedPerson>): void => {

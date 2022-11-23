@@ -1,10 +1,10 @@
 {
-  "name": "mongoose-semantics",
+  "name": "basic",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node index.ts",
+    "try": "ts-node index.ts",
     "build": "tsc"
   },
   "author": "",
