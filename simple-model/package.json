@@ -1,0 +1,15 @@
+{
+  "name": "mongoose-semantics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node index.ts",
+    "build": "tsc ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^6.5.2"
+  }
+}
