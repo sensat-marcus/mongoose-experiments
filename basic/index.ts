@@ -1,8 +1,10 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { PersonModel, Address, Person } from "./models/person";
+import { EmployerModel } from "./models/employer";
 
 const clearAll = async (): Promise<void> => {
   await PersonModel.deleteMany({});
+  await EmployerModel.deleteMany({});
 };
 
 const createPerson = async (
@@ -35,6 +37,10 @@ const main = async (): Promise<number> => {
 
   const foundPerson = await findPerson("Marcus");
   console.log("Person found", foundPerson);
+
+  const employer = new EmployerModel({ name: "Acme inc" });
+  await employer.save();
+  console.log("Employer saved", employer);
 
   await mongoose.disconnect();
   return 0;
