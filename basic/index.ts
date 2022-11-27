@@ -1,30 +1,26 @@
 import mongoose, { HydratedDocument } from "mongoose";
-import { PersonModel, Address, Person } from "./models/person";
-import { EmployerModel } from "./models/employer";
+import { ChildModel, Child } from "./models/child";
+import { ParentModel } from "./models/parent";
 
 const clearAll = async (): Promise<void> => {
-  await PersonModel.deleteMany({});
-  await EmployerModel.deleteMany({});
+  await ChildModel.deleteMany({});
+  await ParentModel.deleteMany({});
 };
 
-const createPerson = async (
-  name: string,
-  address: Address
-): Promise<HydratedDocument<Person>> => {
-  const person = new PersonModel({
+const createChild = async (name: string): Promise<HydratedDocument<Child>> => {
+  const child = new ChildModel({
     name: name,
-    address: address,
   });
-  await person.save();
-  return person;
+  await child.save();
+  return child;
 };
 
-const findPerson = async (name: string): Promise<HydratedDocument<Person>> => {
-  const person = await PersonModel.findOne({ name: name });
-  if (!person) {
+const findChild = async (name: string): Promise<HydratedDocument<Child>> => {
+  const child = await ChildModel.findOne({ name: name });
+  if (!child) {
     throw new Error("Not found");
   }
-  return person;
+  return child;
 };
 
 const main = async (): Promise<number> => {
@@ -32,20 +28,20 @@ const main = async (): Promise<number> => {
   console.log("Connected");
   await clearAll();
 
-  const person = await createPerson("Marcus", { street: "Oxford st" });
-  console.log("Person saved", person);
+  const child = await createChild("Marcus");
+  console.log("Person saved", child);
 
-  const foundPerson = await findPerson("Marcus");
-  console.log("Person found", foundPerson);
+  const foundChild = await findChild("Marcus");
+  console.log("Person found", foundChild);
 
-  const employer = new EmployerModel({ name: "Acme inc", people: [person] });
-  await employer.save();
-  console.log("Employer saved", employer);
+  const parent = new ParentModel({ name: "Acme inc", people: [child] });
+  await parent.save();
+  console.log("Employer saved", parent);
 
-  const foundEmployer = await EmployerModel.findOne({ name: "Acme inc" });
-  console.log("Employer found", foundEmployer);
-  if (foundEmployer) {
-    console.log("Employer found", await foundEmployer.populate("people"));
+  const foundParent = await ParentModel.findOne({ name: "Acme inc" });
+  console.log("Parent found", foundParent);
+  if (foundParent) {
+    console.log("Parent found", await foundParent.populate("child"));
   }
 
   await mongoose.disconnect();
