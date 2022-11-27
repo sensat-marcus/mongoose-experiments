@@ -34,14 +34,14 @@ const main = async (): Promise<number> => {
   const foundChild = await findChild("Marcus");
   console.log("Person found", foundChild);
 
-  const parent = new ParentModel({ name: "Acme inc", people: [child] });
+  const parent = new ParentModel({ name: "Acme inc", children: [child] });
   await parent.save();
   console.log("Employer saved", parent);
 
   const foundParent = await ParentModel.findOne({ name: "Acme inc" });
   console.log("Parent found", foundParent);
   if (foundParent) {
-    console.log("Parent found", await foundParent.populate("child"));
+    console.log("Parent found", await foundParent.populate("children"));
   }
 
   await mongoose.disconnect();
