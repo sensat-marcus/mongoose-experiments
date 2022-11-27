@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "incremental": true,
+    "allowJs": true,
+    "target": "ES2019",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "lib": ["ES6"],
+    "module": "CommonJS",
+    "skipLibCheck": true,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+  },
+  "include": ["./**/*"],
+}

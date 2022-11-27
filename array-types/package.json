@@ -1,0 +1,19 @@
+{
+  "name": "array-types",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "try": "ts-node index.ts",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^6.5.2"
+  },
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "typescript": "^4.8.45"
+  }
+}
