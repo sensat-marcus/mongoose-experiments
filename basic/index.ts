@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { ChildModel, Child } from "./models/child";
-import { ParentModel } from "./models/parent";
+import { Parent, ParentModel } from "./models/parent";
 
 const clearAll = async (): Promise<void> => {
   await ChildModel.deleteMany({});
@@ -8,19 +8,26 @@ const clearAll = async (): Promise<void> => {
 };
 
 const createChild = async (name: string): Promise<HydratedDocument<Child>> => {
-  const child = new ChildModel({
-    name: name,
-  });
+  const child = new ChildModel({ name });
   await child.save();
   return child;
 };
 
 const findChild = async (name: string): Promise<HydratedDocument<Child>> => {
-  const child = await ChildModel.findOne({ name: name });
+  const child = await ChildModel.findOne({ name });
   if (!child) {
     throw new Error("Not found");
   }
   return child;
+};
+
+const createParent = async (
+  name: string,
+  children: Array<HydratedDocument<Child>>
+): Promise<HydratedDocument<Parent>> => {
+  const parent = new ParentModel({ name, children });
+  await parent.save();
+  return parent;
 };
 
 const main = async (): Promise<number> => {
@@ -34,8 +41,7 @@ const main = async (): Promise<number> => {
   const foundChild = await findChild("Marcus");
   console.log("Person found", foundChild);
 
-  const parent = new ParentModel({ name: "Acme inc", children: [child] });
-  await parent.save();
+  const parent = await createParent("Acme inc", [child]);
   console.log("Employer saved", parent);
 
   const foundParent = await ParentModel.findOne({ name: "Acme inc" });
