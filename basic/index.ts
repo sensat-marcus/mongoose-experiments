@@ -7,6 +7,9 @@ const clearAll = async (): Promise<void> => {
   await ParentModel.deleteMany({});
 };
 
+const isPopulated = <T>(x: string | mongoose.Types.ObjectId | T): x is T =>
+  !(x instanceof mongoose.Types.ObjectId) && typeof x !== "string";
+
 const createChild = async (name: string): Promise<HydratedDocument<Child>> => {
   const child = new ChildModel({ name });
   await child.save();
@@ -47,13 +50,29 @@ const main = async (): Promise<number> => {
   const foundParent = await ParentModel.findOne({ name: "Marcus" });
   console.log("Parent found", foundParent);
   if (foundParent) {
-    console.log("Parent found", foundParent);
     console.log("Parent's child'", foundParent.children[0]);
     await foundParent.populate("children");
     console.log("Parent populated", foundParent);
     const foundParentChild = foundParent.children[0];
-    foundParentChild.name = "Tobias";
-    await foundParentChild.save();
+    if (isPopulated(foundParentChild)) {
+      foundParentChild.name = "Tobias";
+      await foundParentChild.save();
+    }
+  }
+
+  const foundParent2 = await ParentModel.findOne({ name: "Marcus" });
+  const child2 = await createChild("Bryn");
+  await child2.save();
+  if (foundParent2) {
+    foundParent2.children.push(child2._id);
+    await foundParent2.save();
+  }
+
+  const foundParent3 = await ParentModel.findOne({ name: "Marcus" });
+  console.log("With children", foundParent3);
+  if (foundParent3) {
+    await foundParent3.populate("children");
+    console.log("Populated with children", foundParent3);
   }
 
   await mongoose.disconnect();

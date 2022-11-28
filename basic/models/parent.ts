@@ -3,7 +3,7 @@ import { Child } from "./child";
 
 export interface Parent {
   name: string;
-  children: Array<HydratedDocument<Child>>;
+  children: Array<mongoose.Types.ObjectId | HydratedDocument<Child>>;
 }
 
 const parentSchema = new mongoose.Schema<Parent>({
