@@ -50,14 +50,15 @@ const main = async (): Promise<number> => {
   const foundParent = await ParentModel.findOne({ name: "Marcus" });
   console.log("Parent found", foundParent);
   if (foundParent) {
-    console.log("Parent's child'", foundParent.children[0]);
+    console.log("Parent's child", foundParent.children[0]);
     await foundParent.populate("children");
     console.log("Parent populated", foundParent);
-    const foundParentChild = foundParent.children[0];
-    if (isPopulated(foundParentChild)) {
-      foundParentChild.name = "Tobias";
-      await foundParentChild.save();
+    let foundParentChild = foundParent.children[0];
+    if (!isPopulated(foundParentChild)) {
+      foundParentChild = await findChild("Toby");
     }
+    foundParentChild.name = "Tobias";
+    await foundParentChild.save();
   }
 
   const foundParent2 = await ParentModel.findOne({ name: "Marcus" });
