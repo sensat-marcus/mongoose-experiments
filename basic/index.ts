@@ -35,19 +35,25 @@ const main = async (): Promise<number> => {
   console.log("Connected");
   await clearAll();
 
-  const child = await createChild("Marcus");
+  const child = await createChild("Toby");
   console.log("Person saved", child);
 
-  const foundChild = await findChild("Marcus");
+  const foundChild = await findChild("Toby");
   console.log("Person found", foundChild);
 
-  const parent = await createParent("Acme inc", [child]);
+  const parent = await createParent("Marcus", [child]);
   console.log("Employer saved", parent);
 
-  const foundParent = await ParentModel.findOne({ name: "Acme inc" });
+  const foundParent = await ParentModel.findOne({ name: "Marcus" });
   console.log("Parent found", foundParent);
   if (foundParent) {
-    console.log("Parent found", await foundParent.populate("children"));
+    console.log("Parent found", foundParent);
+    console.log("Parent's child'", foundParent.children[0]);
+    await foundParent.populate("children");
+    console.log("Parent populated", foundParent);
+    const foundParentChild = foundParent.children[0];
+    foundParentChild.name = "Tobias";
+    await foundParentChild.save();
   }
 
   await mongoose.disconnect();

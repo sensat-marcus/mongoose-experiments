@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { Child } from "./child";
 
 export interface Parent {
   name: string;
-  children: Array<Child>;
+  children: Array<HydratedDocument<Child>>;
 }
 
 const parentSchema = new mongoose.Schema<Parent>({
