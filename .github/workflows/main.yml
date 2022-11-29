@@ -7,6 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Event ${{ github.event_name }}"
-      - uses: actions/checkout
+      - uses: actions/checkout@v3
       - name: Try it
         run: yarn try
