@@ -12,4 +12,5 @@ jobs:
       - name: Try it
         run: |
           cd basic
+          yarn install
           yarn try
