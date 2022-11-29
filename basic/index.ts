@@ -34,7 +34,7 @@ const createParent = async (
 };
 
 const main = async (): Promise<number> => {
-  await mongoose.connect("mongodb://localhost:27017/playpen");
+  await mongoose.connect("mongodb://db:27017/playpen?directConnection=true");
   console.log("Connected");
   await clearAll();
 
